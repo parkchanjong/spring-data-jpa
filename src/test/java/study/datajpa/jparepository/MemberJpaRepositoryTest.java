@@ -1,10 +1,11 @@
-package study.datajpa.repository;
+package study.datajpa.jparepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.datajpa.entity.Member;
+import study.datajpa.jparepository.MemberJpaRepository;
 
 import java.util.List;
 
@@ -12,18 +13,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class MemberRepositoryTest {
+class MemberJpaRepositoryTest {
 
     @Autowired
-    MemberRepository MemberRepository;
+    MemberJpaRepository memberJpaRepository;
 
     @Test
     public void testMember() {
         Member member = new Member("memberA");
-        Member savedMember = MemberRepository.save(member);
+        Member savedMember = memberJpaRepository.save(member);
 
-        Member findMember = MemberRepository.findById(savedMember.getId())
-                                            .get();
+        Member findMember = memberJpaRepository.find(savedMember.getId());
 
         assertThat(findMember.getId()).isEqualTo(member.getId());
         assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
@@ -34,26 +34,26 @@ class MemberRepositoryTest {
     public void basicCRUD() {
         Member member1 = new Member("member1");
         Member member2 = new Member("member2");
-        MemberRepository.save(member1);
-        MemberRepository.save(member2);
+        memberJpaRepository.save(member1);
+        memberJpaRepository.save(member2);
 
-        Member findMember1 = MemberRepository.findById(member1.getId())
-                                             .get();
-        Member findMember2 = MemberRepository.findById(member2.getId())
-                                             .get();
+        Member findMember1 = memberJpaRepository.findById(member1.getId())
+                                                .get();
+        Member findMember2 = memberJpaRepository.findById(member2.getId())
+                                                .get();
         assertThat(findMember1).isEqualTo(member1);
         assertThat(findMember2).isEqualTo(member2);
 
-        List<Member> all = MemberRepository.findAll();
+        List<Member> all = memberJpaRepository.findAll();
         assertThat(all.size()).isEqualTo(2);
 
-        long count = MemberRepository.count();
+        long count = memberJpaRepository.count();
         assertThat(count).isEqualTo(2);
 
-        MemberRepository.delete(member1);
-        MemberRepository.delete(member2);
+        memberJpaRepository.delete(member1);
+        memberJpaRepository.delete(member2);
 
-        long deletedCount = MemberRepository.count();
+        long deletedCount = memberJpaRepository.count();
         assertThat(deletedCount).isEqualTo(0);
     }
 }
